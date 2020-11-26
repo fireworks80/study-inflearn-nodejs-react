@@ -4,6 +4,7 @@ const port = 3000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const User = require('./models/User');
+const config = require('./config/key');
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -11,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // application/json
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://seungchulhan800624:avalon1!@cluster0.43cuz.mongodb.net/<dbname>?retryWrites=true&w=majority', {
+mongoose.connect(config.mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
