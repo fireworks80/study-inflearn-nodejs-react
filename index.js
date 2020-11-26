@@ -19,7 +19,7 @@ mongoose.connect('mongodb+srv://seungchulhan800624:avalon1!@cluster0.43cuz.mongo
 }).then(() => console.log('mongodb connect....'))
   .catch(err => console.log(err));
 
-app.get('/', (req, res) => res.send('hello world'));
+app.get('/', (req, res) => res.send('hello world !!'));
 
 app.post('/register', (req, res) => { 
   // 회원 가입 정보를 client에서 받아서 db에 넣어 준다.
