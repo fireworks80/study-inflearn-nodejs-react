@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 
 const User = require('./models/User');
 const config = require('./config/key');
+const auth = require('./middleware/auth');
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,7 +27,7 @@ mongoose.connect(config.mongoURI, {
 
 app.get('/', (req, res) => res.send('hello world !!'));
 
-app.post('/register', (req, res) => { 
+app.post('/api/users/register', (req, res) => { 
   // 회원 가입 정보를 client에서 받아서 db에 넣어 준다.
 
   const user = new User(req.body);
@@ -39,7 +40,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-app.post('/login', (req, res) => { 
+app.post('/api/users/login', (req, res) => { 
   // 요청 이메일이 db에 있는지 찾는다.
   User.findOne({ email: req.body.email }, (err, user) => { 
     if (!user) {
@@ -64,8 +65,23 @@ app.post('/login', (req, res) => {
       });
     });
   });
+});
 
+app.get('/api/users/auth', auth, (req, res) => { 
+  // ahthentication이 true 라는 뜻
+  // role 이 0이 아니면 관리자 0 -> 일반 유저
 
+  const { _id, role, email, name, lastname, image} = req.user;
+  res.status(200).json({
+    _id,
+    isAdmin: role ? true : false,
+    isAuth: true,
+    email,
+    name,
+    lastname,
+    role,
+    image
+  });
 });
 
 
