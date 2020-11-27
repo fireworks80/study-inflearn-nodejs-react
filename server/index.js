@@ -10,9 +10,14 @@ const User = require('./models/User');
 const config = require('./config/key');
 const auth = require('./middleware/auth');
 
+const corsOrigin = ['http://localhost:3000'];
+
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: corsOrigin,
+  credentials: true
+}));
 
 // application/json
 app.use(bodyParser.json());
