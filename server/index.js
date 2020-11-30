@@ -1,6 +1,7 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = 3000;
+const port = 5000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -10,9 +11,14 @@ const config = require('./config/key');
 const auth = require('./middleware/auth');
 
 require('dotenv').config();
+const corsOrigin = ['http://localhost:3000'];
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+  origin: corsOrigin,
+  credentials: true
+}));
 
 // application/json
 app.use(bodyParser.json());
@@ -27,7 +33,20 @@ mongoose.connect(config.mongoURI, {
 }).then(() => console.log('mongodb connect....'))
   .catch(err => console.log(err));
 
+// cors 허용 방법 1 - 헤더를 변경
+// app.all('/*', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
+
+
 app.get('/', (req, res) => res.send('hello world !!'));
+
+app.get('/api/hello', (req, res) => {
+  res.send('안녕하세요');
+});
+
 
 app.post('/api/users/register', (req, res) => { 
   // 회원 가입 정보를 client에서 받아서 db에 넣어 준다.
