@@ -9,6 +9,8 @@ const User = require('./models/User');
 const config = require('./config/key');
 const auth = require('./middleware/auth');
 
+require('dotenv').config();
+
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
