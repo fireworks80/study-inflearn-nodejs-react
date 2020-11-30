@@ -5,16 +5,17 @@ const port = 5000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
+// require('dotenv').config();
 const User = require('./models/User');
 const config = require('./config/key');
 const auth = require('./middleware/auth');
 
-require('dotenv').config();
+
 const corsOrigin = ['http://localhost:3000'];
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors({
   origin: corsOrigin,
   credentials: true
@@ -23,7 +24,6 @@ app.use(cors({
 // application/json
 app.use(bodyParser.json());
 
-app.use(cookieParser());
 
 mongoose.connect(config.mongoURI, {
   useNewUrlParser: true,
@@ -41,10 +41,10 @@ mongoose.connect(config.mongoURI, {
 // });
 
 
-app.get('/', (req, res) => res.send('hello world !!'));
+// app.get('/', (req, res) => res.send('hello world !!'));
 
 app.get('/api/hello', (req, res) => {
-  res.send('안녕하세요');
+  res.json(req.cookies);
 });
 
 
@@ -63,6 +63,8 @@ app.post('/api/users/register', (req, res) => {
 
 app.post('/api/users/login', (req, res) => { 
   // 요청 이메일이 db에 있는지 찾는다.
+  // console.log(req.body);
+
   User.findOne({ email: req.body.email }, (err, user) => { 
     if (!user) {
       return res.json({
@@ -79,10 +81,13 @@ app.post('/api/users/login', (req, res) => {
       // pw까지 맞다면 token을 생성하기
 
       user.generateToken((err, user) => {
-        if (err) return res.status(400).send(err);
+
+        if (err) {
+          return res.status(400).send(err);
+        }
 
         // 토큰을 저장한다. where ? cookie, localstorage
-        res.cookie('x_auth', user.token).status(200).json({loginSuccess: true, userId: user._id});
+        res.cookie('x_auth', user.token).status(200).json({ loginSuccess: true, userId: user._id });
       });
     });
   });
@@ -106,8 +111,7 @@ app.get('/api/users/auth', auth, (req, res) => {
 });
 
 app.get('/api/users/logout', auth, (req, res) => {
-  // console.log(req);
-  User.findOneAndUpdate({ _id: req.user._id }, { token: '' }, (err, user) => { 
+  User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => { 
     if (err) return res.json({ success: false, err });
     return res.status(200).send({ success: true });
   });

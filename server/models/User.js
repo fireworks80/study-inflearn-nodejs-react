@@ -69,7 +69,7 @@ userSchema.methods.generateToken = function (cb) {
   // jsonweebtoken
   const user = this;
 
-  const token = jwt.sign(user._id.toHexString(), process.env.SECTOKEN);
+  const token = jwt.sign(user._id.toHexString(), 'secretToken');
   user.token = token;
   user.save(function (err, user) {
     if (err) return cb(err);
@@ -82,7 +82,7 @@ userSchema.statics.findByToken = function (token, cb) {
 
   // user._id + '' = token
   // 토큰을 decode 한다.
-  jwt.verify(token, SECTOKEN, function (err, decoded) { 
+  jwt.verify(token, 'secretToken', function (err, decoded) { 
     // 유저 아이디를 이용해서 유저를 찾은 다음
     // 클라이언트에서 가져온 token과 db보관 토큰과 일치 되는지 비교
 
