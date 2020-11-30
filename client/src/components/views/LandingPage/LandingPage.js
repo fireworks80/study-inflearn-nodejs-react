@@ -10,15 +10,15 @@ function LandingPage(props) {
   }, []);
 
   const onLogoutHandle = () => { 
-    axios.get('http://localhost:5000/api/users/logout')
+    axios.get('http://localhost:5000/api/users/logout', {withCredentials: true})
       .then(res => {
-        console.log(res.data);
-        // if (res.data) {
-        //   props.history.push('/login');
-        // } else {
-        //   alert('로그아웃 하는데 문제 생김');
-        //   console.log(res);
-        // }
+        // console.log(res.data);
+        if (res.data.success) {
+          props.history.push('/login');
+        } else {
+          alert('로그아웃 하는데 문제 생김');
+          console.log(res);
+        }
       });
   };
 

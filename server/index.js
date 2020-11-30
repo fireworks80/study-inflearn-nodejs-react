@@ -5,21 +5,13 @@ const port = 5000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// require('dotenv').config();
 const User = require('./models/User');
 const config = require('./config/key');
 const auth = require('./middleware/auth');
 
-
-const corsOrigin = ['http://localhost:3000'];
-
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({
-  origin: corsOrigin,
-  credentials: true
-}));
 
 // application/json
 app.use(bodyParser.json());
@@ -31,8 +23,12 @@ mongoose.connect(config.mongoURI, {
   useCreateIndex: true,
   useFindAndModify: false
 }).then(() => console.log('mongodb connect....'))
-  .catch(err => console.log(err));
+.catch(err => console.log(err));
 
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 // cors 허용 방법 1 - 헤더를 변경
 // app.all('/*', function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
